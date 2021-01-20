@@ -6,13 +6,23 @@ import { useData } from "../DataContext";
 import { useForm } from "react-hook-form";
 import Web3 from "web3";
 import Portis from "@portis/web3";
+import metamasklogo from "./METAMASK.png";
+import fortmaticLogo from "./fortmatic.png";
+import portislogo from "./PORTIS.png";
+import walletconnectlogo from "./WALLETCONNECT.png";
+import Swal from "sweetalert2";
+import coinbaselogo from "./COINBASE.png";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import Fortmatic from "fortmatic";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     marginTop: theme.spacing(1),
+  },
+  dropDown: {
+    justifyContent: "center",
   },
 }));
 
@@ -36,14 +46,17 @@ export const DropDown = () => {
 
   const styles = useStyles();
   const handleChange = async (e) => {
-    if (e.target.value === 1) {
+    if (e.target.value === 0) {
+      data["dropDownValue"] = e.target.value;
+      setValues(data);
+    } else if (e.target.value === 1) {
       let web3 = new Web3(
         Web3.givenProvider ||
           "https://ropsten.infura.io/v3/4d39325e4c914146b733ef5b792ab2a0"
       );
       window.web3 = web3;
       try {
-        // await window.ethereum.enable();
+        await window.ethereum.enable();
         const account = await web3.eth.getAccounts();
         console.log(account[0]);
         console.log(
@@ -55,7 +68,18 @@ export const DropDown = () => {
         data["web3"] = web3;
         setValues(data);
       } catch (err) {
-        console.log("ERROR:HEHE");
+        console.log("ERROR:HEHE", err.message);
+        if (err.message.includes(" 'enable' of undefined")) {
+          Swal.fire(
+            "METAMASK ERROR!",
+            "PLEASE INSTALL OR ENABLE METAMASK ON YOUR BROWSER"
+          );
+          Swal.update({
+            icon: "error",
+          });
+          data["dropDownValue"] = 0;
+          setValues(data);
+        }
       }
     } else if (e.target.value === 2) {
       const provider = new WalletConnectProvider({
@@ -149,21 +173,62 @@ export const DropDown = () => {
   return (
     <>
       <FormControl className={styles.root}>
-        <InputLabel>Connect Wallet</InputLabel>
+        <InputLabel className={styles.dropDown}>Connect Wallet</InputLabel>
         <Select
+          className={styles.dropDown}
           name="dropDownValue"
           ref={register}
           onChange={handleChange}
           defaultValue={0}
         >
-          <MenuItem value={0}>
+          <MenuItem className={styles.dropDown} value={0}>
             <strong>Select a wallet</strong>
           </MenuItem>
-          <MenuItem value={1}>MetaMask</MenuItem>
-          <MenuItem value={2}>WalletConnect</MenuItem>
-          <MenuItem value={3}>Portis</MenuItem>
-          <MenuItem value={4}>Fortmatic</MenuItem>
-          <MenuItem value={5}>Coinbase</MenuItem>
+          <MenuItem className={styles.dropDown} value={1}>
+            <img
+              src={metamasklogo}
+              alt="logo"
+              width="30"
+              style={{ marginRight: "5px" }}
+            />
+            MetaMask
+          </MenuItem>
+          <MenuItem className={styles.dropDown} value={2}>
+            <img
+              src={walletconnectlogo}
+              alt="logo"
+              style={{ marginRight: "5px" }}
+              width="30"
+            />
+            WalletConnect
+          </MenuItem>
+          <MenuItem className={styles.dropDown} value={3}>
+            <img
+              src={portislogo}
+              alt="logo"
+              style={{ marginRight: "5px" }}
+              width="30"
+            />
+            Portis
+          </MenuItem>
+          <MenuItem className={styles.dropDown} value={4}>
+            <img
+              src={fortmaticLogo}
+              alt="logo"
+              style={{ marginRight: "5px" }}
+              width="30"
+            />
+            Fortmatic
+          </MenuItem>
+          <MenuItem className={styles.dropDown} value={5}>
+            <img
+              src={coinbaselogo}
+              alt="logo"
+              style={{ marginRight: "5px" }}
+              width="30"
+            />
+            Coinbase
+          </MenuItem>
         </Select>
       </FormControl>
     </>

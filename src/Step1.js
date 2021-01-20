@@ -33,9 +33,9 @@ export const Step1 = () => {
   const history = useHistory();
 
   const onSubmit = (data) => {
-    history.push("/step2");
-    data["dropDownValue"] = 0;
     setValues(data);
+    data["dropDownValue"] = 0;
+    history.push("/step2");
   };
   return (
     <MainContainer>

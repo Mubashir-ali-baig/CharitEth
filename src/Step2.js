@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { MainContainer } from "./components/MainContainer";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -22,8 +22,13 @@ const schema = yup.object().shape({
 
 export const Step2 = () => {
   const { setValues, data } = useData();
-  console.log(data);
   const history = useHistory();
+  console.log(data);
+  useEffect(() => {
+    if (data["amount"] === undefined) {
+      history.push("./");
+    }
+  }, [data]);
 
   const { register, handleSubmit, watch, errors } = useForm({
     defaultValues: {
@@ -37,9 +42,9 @@ export const Step2 = () => {
   const hasPrice = watch("hasPrice");
 
   const onSubmit = (data) => {
-    history.push("./result");
     console.log(data);
     setValues(data);
+    history.push("./result");
   };
 
   return (
@@ -82,7 +87,13 @@ export const Step2 = () => {
           />
         )}
         <DropDown />
-        <PrimaryButton status={data["dropDownValue"] === 0 ? true : false}>
+        <PrimaryButton
+          status={
+            data["dropDownValue"] === 0 || data["dropDownValue"] === undefined
+              ? true
+              : false
+          }
+        >
           Next
         </PrimaryButton>
       </Form>

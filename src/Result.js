@@ -4,6 +4,7 @@ import { useData } from "./DataContext";
 import { ABI } from "./components/AbiData";
 import { makeStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";
+import { useHistory } from "react-router-dom";
 import Web3 from "web3";
 import {
   TableContainer,
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 });
 
 export const Result = () => {
+  let history = useHistory();
   const [addr, setAddr] = useState("");
   const [balance, setBalance] = useState("0");
   const [amount, setAmount] = useState(0);
@@ -37,14 +39,12 @@ export const Result = () => {
   const [gasPrice, setGasPrice] = useState(0);
   const [txProgress, setTxProgress] = useState(false);
   const [status, setStatus] = useState(true);
-  //const [web3, setWeb3] = useState(
-  //  new Web3(
-  //    Web3.givenProvider ||
-  //      "https://ropsten.infura.io/v3/4d39325e4c914146b733ef5b792ab2a0"
-  //  )
-  //);
-  const { data } = useData();
+
+  let { setValues, data } = useData();
   useEffect(() => {
+    if (data["amount"] === undefined) {
+      history.push("./");
+    }
     if (data["addr"] !== "") {
       getBalance();
     }
@@ -54,8 +54,15 @@ export const Result = () => {
     console.log("ADDRESS", data["addr"]);
     console.log("WEB##3", data["web3"]);
 
-    let bal = await data["web3"].eth.getBalance(data["addr"]);
-    setBalance(data["web3"].utils.fromWei(bal));
+    try {
+      let bal = await data["web3"].eth.getBalance(data["addr"]);
+      setBalance(data["web3"].utils.fromWei(bal));
+    } catch (err) {
+      console.log("ERROR", err.message);
+      if (data["web3"] === undefined) {
+        history.push("./");
+      }
+    }
   };
 
   //const Transaction = async (addr, entries) => {
@@ -181,9 +188,10 @@ export const Result = () => {
     window.ethereum = web3;
     const txHash = web3.eth
       .sendTransaction(transactionParameters)
-      .then((err, txHash) => {
+      .then(async (err, txHash) => {
         console.log("HELLOOOO", txHash);
         setTxProgress(false);
+        await getBalance();
         Swal.fire(
           "Transaction successfull!",
           `You've sent ${entries[1][1]} ETH to ${entries[0][1]}.`
@@ -193,6 +201,7 @@ export const Result = () => {
         });
       })
       .catch((err) => {
+        setTxProgress(false);
         console.log("ERRR");
       });
     //const txHash = await window.ethereum.request({
@@ -227,6 +236,13 @@ export const Result = () => {
     } catch (err) {
       console.log("ERROR: ", err.message);
     }
+  };
+
+  const handleLink = () => {
+    console.log("INSIDE HANDLE LINK");
+    data["dropDownValue"] = 0;
+    setValues(data);
+    history.push("./");
   };
 
   return (
@@ -266,7 +282,7 @@ export const Result = () => {
         <>
           <PrimaryButton onClick={onSubmit}>Checkout</PrimaryButton>
 
-          <Link to="/">Make another transaction</Link>
+          <Link onClick={handleLink}>Make another transaction</Link>
         </>
       ) : (
         <CircularProgress />
