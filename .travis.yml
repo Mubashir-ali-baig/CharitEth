@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t CharitEth -f Dockerfile.dev .
+  - docker build -t chariteth -f Dockerfile.dev .
 
 script:
   - docker run chariteth yarn run test -- --coverage
