@@ -10,7 +10,7 @@ before_install:
 deploy:
   provider: elasticbeanstalk
   region: "us-east-2"
-  app: "chariteth"
+  app: "charieth"
   env: "Charieth-env"
   bucket_name: "elasticbeanstalk-us-east-2-823046387437"
   bucket_path: "charieth"

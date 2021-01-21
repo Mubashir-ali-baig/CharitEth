@@ -154,9 +154,7 @@ export const DropDown = () => {
       );
 
       try {
-        let address = await web3.eth.getAccounts((err, address) => {
-          console.log(address);
-        });
+        let address = await web3.eth.getCoinbase();
         console.log("ADDRESS", address);
         let balance = await web3.eth.getBalance(address);
         console.log("BALANCE", balance);
