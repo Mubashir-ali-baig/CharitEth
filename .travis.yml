@@ -7,4 +7,17 @@ before_install:
   - docker build -t chariteth -f Dockerfile.dev .
 
 script:
-  - docker run chariteth yarn run start
+  - docker run chariteth
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "chariteth"
+  env: "Chariteth-env"
+  bucket_name: "elasticbeanstalk-us-east-2-823046387437"
+  bucket_path: "chariteth"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
