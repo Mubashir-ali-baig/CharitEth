@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:lts-alpine as builder
 RUN apk --no-cache add git
 RUN apk add --no-cache python python-dev python3 python3-dev \
     linux-headers build-base bash git ca-certificates && \
@@ -17,5 +17,10 @@ RUN yarn install
 
 COPY . .
 
-CMD ["yarn","run","start"]
+RUN yarn run build
+
+FROM nginx
+EXPOSE 80
+COPY --from=builder /app/build /usr/share/nginx/html
+
 
