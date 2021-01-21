@@ -147,13 +147,16 @@ export const DropDown = () => {
         console.log(err.message);
       }
     } else if (e.target.value === 5) {
+      console.log("COINBASE");
       let web3 = new Web3(
         Web3.givenProvider ||
           "https://ropsten.infura.io/v3/4d39325e4c914146b733ef5b792ab2a0"
       );
 
       try {
-        let address = await web3.eth.getCoinbase();
+        let address = await web3.eth.getAccounts((err, address) => {
+          console.log(address);
+        });
         console.log("ADDRESS", address);
         let balance = await web3.eth.getBalance(address);
         console.log("BALANCE", balance);

@@ -13,7 +13,7 @@ deploy:
   app: "chariteth"
   env: "Charieth-env"
   bucket_name: "elasticbeanstalk-us-east-2-823046387437"
-  bucket_path: "chariteth"
+  bucket_path: "charieth"
   on:
     branch: main
   access_key_id: $AWS_ACCESS_KEY
