@@ -6,9 +6,6 @@ services:
 before_install:
   - docker build -t chariteth -f Dockerfile.dev .
 
-script:
-  - docker run chariteth
-
 deploy:
   provider: elasticbeanstalk
   region: "us-east-2"
