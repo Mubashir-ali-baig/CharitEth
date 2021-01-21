@@ -11,7 +11,7 @@ deploy:
   provider: elasticbeanstalk
   region: "us-east-2"
   app: "charieth"
-  env: "Charieth-env"
+  env: "Charieth-env-1"
   bucket_name: "elasticbeanstalk-us-east-2-823046387437"
   bucket_path: "charieth"
   on:
