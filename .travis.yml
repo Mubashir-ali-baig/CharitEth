@@ -7,4 +7,4 @@ before_install:
   - docker build -t chariteth -f Dockerfile.dev .
 
 script:
-  - docker run chariteth yarn run test -- --coverage
+  - docker run chariteth yarn run start
